@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GourmetCraft — Recipe Finder & Culinary Explorer</title>
+  <meta name="description" content="Platform pencarian resep makanan profesional berbasis DummyJSON API." />
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Pico CSS Base -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+
+  <!-- Custom Corporate CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Header / Navigation Bar -->
+  <header class="navbar-sticky">
+    <div class="container navbar-inner">
+      <div class="brand-group">
+        <div class="brand-logo">✨</div>
+        <div>
+          <span class="brand-name">GourmetCraft</span>
+          <span class="brand-sub">HSI Boarding School • Class XI</span>
+        </div>
+      </div>
+
+      <div class="view-toggle">
+        <button id="show-all-btn" class="nav-tab active-tab">
+          <span>🍜</span> Semua Resep
+        </button>
+        <button id="show-fav-btn" class="nav-tab outline">
+          <span>❤️</span> Favorit (<span id="fav-count">0</span>)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero Banner -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <span class="hero-badge">🚀 SKL 2 — Recipe Finder API</span>
+        <h1 class="hero-title">Jelajahi Inspirasi Kuliner Berkelas Dunia</h1>
+        <p class="hero-subtitle">
+          Temukan ratusan resep masakan pilihan dari berbagai negara dengan rincian bahan, nutrisi, dan panduan memasak langkah demi langkah secara real-time.
+        </p>
+      </div>
+    </section>
+
+    <!-- Filter Control Panel -->
+    <section class="filter-card" aria-label="Kontrol resep">
+      <div class="controls-grid">
+        <div class="control-group search-group">
+          <label for="search-input">🔎 Cari Resep / Bahan</label>
+          <input
+            id="search-input"
+            type="search"
+            placeholder="Ketik resep: Pizza, Pasta, Chicken..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="control-group">
+          <label for="cuisine-select">🌍 Masakan (Cuisine)</label>
+          <select id="cuisine-select">
+            <option value="all">Semua Masakan</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="difficulty-select">⚡ Tingkat Kesulitan</label>
+          <select id="difficulty-select">
+            <option value="all">Semua Tingkat</option>
+            <option value="Easy">Mudah (Easy)</option>
+            <option value="Medium">Sedang (Medium)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="sort-select">↕️ Urutkan</label>
+          <select id="sort-select">
+            <option value="default">Rekomendasi</option>
+            <option value="rating-desc">Rating Tertinggi</option>
+            <option value="time-asc">Waktu Tercepat</option>
+            <option value="cal-asc">Kalori Terrendah</option>
+          </select>
+        </div>
+
+        <div class="control-group button-group">
+          <button id="reset-btn" class="secondary reset-btn">
+            🔄 Reset
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Summary Bar -->
+    <section class="summary-bar">
+      <div class="summary-left">
+        <span id="result-summary">Memuat data resep...</span>
+      </div>
+      <div class="status-note">
+        <span class="status-dot"></span>
+        API Connected • DummyJSON Recipes
+      </div>
+    </section>
+
+    <!-- Loading State -->
+    <section id="loading-state" class="state-card" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <h3>Menyiapkan Hidangan...</h3>
+      <p>Sedang mengambil data resep terbaik dari server.</p>
+    </section>
+
+    <!-- Error State -->
+    <section id="error-state" class="state-card error-state" hidden aria-live="assertive">
+      <div class="state-icon">⚠️</div>
+      <h3>Gagal Memuat Resep</h3>
+      <p id="error-message">Periksa koneksi internet Anda lalu coba kembali.</p>
+      <button id="retry-btn">🔄 Coba Lagi</button>
+    </section>
+
+    <!-- Empty State -->
+    <section id="empty-state" class="state-card" hidden>
+      <div class="state-icon">📭</div>
+      <h3>Resep Tidak Ditemukan</h3>
+      <p id="empty-text">Coba gunakan kata kunci pencarian atau filter yang lain.</p>
+    </section>
+
+    <!-- Recipe Cards Grid -->
+    <section id="recipe-grid" class="recipe-grid" aria-label="Daftar resep" hidden></section>
+  </main>
+
+  <!-- Corporate Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <strong>GourmetCraft Explorer</strong>
+        <p>Project Pembelajaran Phase 5 • Coders Club HSI Boarding School</p>
+      </div>
+      <div class="footer-copy">
+        <small>© 2026 GourmetCraft. Powered by DummyJSON API & LocalStorage.</small>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Dialog Detail Resep -->
+  <dialog id="recipe-dialog">
+    <article class="dialog-card">
+      <button id="dialog-close" class="close" aria-label="Tutup detail resep"></button>
+      <div id="dialog-content">
+        <!-- Diisi dinamis oleh JS -->
+      </div>
+    </article>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
